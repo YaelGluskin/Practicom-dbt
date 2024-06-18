@@ -22,6 +22,7 @@ const createUser = asyncHandler(async (req, res) => {
   //get all
   
   const getAllUsers = asyncHandler(async (req, res) => {
+    console.log("getAllUsers")
     try {
       const allUsers = await pool.query('SELECT * FROM loguser');
       res.json(allUsers.rows);
@@ -32,6 +33,28 @@ const createUser = asyncHandler(async (req, res) => {
   });
   
   //get 
+  
+  // get user by username
+
+const getUserByUsername = asyncHandler(async (req, res) => {
+  //const { username } = req.params; // assuming username is passed as a route parameter
+  console.log("getUserByUsername")
+  try {
+    const { username, user_password } = req.body;
+    const user = await pool.query(
+      'SELECT * FROM loguser WHERE username = $1',
+      [username]
+    );
+    if (user.rows.length > 0) {
+      res.status(200).json({ message: 'User Logged In' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
   
   const getUserById = asyncHandler(async (req, res) => {
     try {
@@ -48,6 +71,10 @@ const createUser = asyncHandler(async (req, res) => {
       res.status(500).send("Server error");
     }
   });
+
+  
+
+  
   
   //update
   
@@ -89,6 +116,7 @@ const createUser = asyncHandler(async (req, res) => {
     createUser,
     getAllUsers,
     getUserById,
+    getUserByUsername,
     updateUser,
     deleteUser
 };
