@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Container, Grid, Typography, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import axios from 'axios';
 
 const LoginForm = () => {
   const { handleSubmit, control, formState: { errors } } = useForm();
@@ -12,6 +13,12 @@ const LoginForm = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    if(isLoginMode){
+      // Send login request
+    } else {
+      // Send register
+
+    }
     // You can handle form submission logic here, e.g., API calls for login or registration
   };
 
@@ -32,7 +39,7 @@ const LoginForm = () => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Controller
-              name="name"
+              name="username"
               control={control}
               defaultValue=""
               rules={{ required: "Name is required" }}
@@ -42,8 +49,8 @@ const LoginForm = () => {
                   label="Name"
                   variant={isLoginMode ? "outlined" : "filled"}
                   fullWidth
-                  error={!!errors.name}
-                  helperText={errors.name ? errors.name.message : ''}
+                  error={!!errors.username}
+                  helperText={errors.username ? errors.username.message : ''}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -57,7 +64,7 @@ const LoginForm = () => {
           </Grid>
           <Grid item xs={12}>
             <Controller
-              name="password"
+              name="user_password"
               control={control}
               defaultValue=""
               rules={{ required: "Password is required" }}
@@ -68,8 +75,8 @@ const LoginForm = () => {
                   type={showPassword ? 'text' : 'password'}
                   variant={isLoginMode ? "outlined" : "filled"}
                   fullWidth
-                  error={!!errors.password}
-                  helperText={errors.password ? errors.password.message : ''}
+                  error={!!errors.user_password}
+                  helperText={errors.user_password ? errors.user_password.message : ''}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
