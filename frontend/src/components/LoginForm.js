@@ -11,15 +11,39 @@ const LoginForm = () => {
   const [isLoginMode, setIsLoginMode] = useState(true); // Initially set to login mode
   const [showPassword, setShowPassword] = useState(false); // Password visibility state
 
-  const onSubmit = (data) => {
+  const onSubmit = async(data) => {
     console.log(data);
-    if(isLoginMode){
+   
+      if(isLoginMode){
       // Send login request
-    } else {
-      // Send register
-
+      //const { username } = data;
+      try {
+        const response = await axios.post('http://localhost:5001/loguser/login', data);
+        console.log(response.data);
+        if (response.data.message === 'Login successful') {
+            // Handle successful login
+            console.log('User logged in:', response.data.user);
+        }
+    } catch (error) {
+        if (error.response) {
+            console.log(error.response.data.message);
+        } else {
+            console.error('Error:', error.message);
+        }
     }
-    // You can handle form submission logic here, e.g., API calls for login or registration
+    
+    } else {
+      try{
+      // Send register
+      const response = await axios.post('http://localhost:5001/loguser', data)
+      console.log(response)
+      return(<div>you got register</div>)
+    } catch(error)
+    {// You can handle form submission logic here, e.g., API calls for login or registration
+    console.error(error)
+  }
+    
+  }
   };
 
   const switchMode = () => {
