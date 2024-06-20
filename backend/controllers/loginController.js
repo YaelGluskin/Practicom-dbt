@@ -5,15 +5,15 @@ const pool = require('../db');
 //create 
 const createUser = asyncHandler(async (req, res) => {
   try {
-    const { username, user_password, email } = req.body;
+    const { username, user_password, email, user_role } = req.body;
 
     //encryption the password before insertion to database
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(user_password, salt);
 
     const newUser = await pool.query(
-      "INSERT INTO \"loguser\" (username, user_password, email) VALUES($1, $2, $3) RETURNING *",
-      [username, hashedPassword, email]
+      "INSERT INTO \"loguser\" (username, user_password, email, user_role) VALUES($1, $2, $3) RETURNING *",
+      [username, hashedPassword, email, user_role || 'USER']
     );
 
     res.json(newUser.rows[0]);
@@ -40,6 +40,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const getUserByUsername = asyncHandler(async (req, res) => {
   try {
     const { username, user_password } = req.body;
+
     const user = await pool.query(
       'SELECT * FROM "loguser" WHERE username = $1',
       [username]
@@ -88,7 +89,7 @@ const getUserById = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, user_password, email } = req.body;
+    const { username, user_password, email, user_role } = req.body;
     
     //encryption before insertion
     const salt = await bcrypt.genSalt(10);
@@ -96,7 +97,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
     const updateUser = await pool.query(
       'UPDATE loguser SET username = $1, user_password = $2, email = $3 WHERE user_id = $4',
-      [username, hashedPassword, email, id]
+      [username, hashedPassword, email, user_role || 'USER', id]
     );
 
     res.json("User was updated!");
