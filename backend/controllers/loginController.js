@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt')
 const pool = require('../db');
 
 //create 
-console.log("!!!!!!!!!!!!!!!!!")
 const createUser = asyncHandler(async (req, res) => {
   try {
     const { username, user_password, email } = req.body;
@@ -11,11 +10,6 @@ const createUser = asyncHandler(async (req, res) => {
     //encryption the password before insertion to database
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(user_password, salt);
-
-
-    console.log('Encrypted password is: ', user_password);
-    console.log('Decrypted password is: ', hashedPassword);
-
 
     const newUser = await pool.query(
       "INSERT INTO \"loguser\" (username, user_password, email) VALUES($1, $2, $3) RETURNING *",
@@ -62,6 +56,10 @@ const getUserByUsername = asyncHandler(async (req, res) => {
     }
 
     res.json({ message: 'Login successful', user: user.rows[0] });
+
+    console.log('Encrypted password is: ', user_password);
+    console.log('Decrypted password is: ', hashedPassword);
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
