@@ -16,7 +16,7 @@ function App() {
         <Route path="login" element={<LoginForm />} />
 
         {/* protected routes */}
-        <Route path="newuser" element={<NewUser />} />
+        <Route path="welcome/:username" element={<NewUser />} />
         <Route path="home" element={<Home />} />
       </Routes>
     </Router>
