@@ -3,13 +3,23 @@ const bcrypt = require('bcrypt')
 const pool = require('../db');
 
 //create 
-
+console.log("!!!!!!!!!!!!!!!!!")
 const createUser = asyncHandler(async (req, res) => {
   try {
     const { username, user_password, email } = req.body;
+
+    //encryption the password before insertion to database
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(user_password, salt);
+
+
+    console.log('Encrypted password is: ', user_password);
+    console.log('Decrypted password is: ', hashedPassword);
+
+
     const newUser = await pool.query(
       "INSERT INTO \"loguser\" (username, user_password, email) VALUES($1, $2, $3) RETURNING *",
-      [username, user_password, email]
+      [username, hashedPassword, email]
     );
 
     res.json(newUser.rows[0]);
@@ -44,13 +54,10 @@ const getUserByUsername = asyncHandler(async (req, res) => {
     if (user.rows.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
-    /* // Encryption doesn't work
+    
+    // checking the encrypted password
     const validPassword = await bcrypt.compare(user_password, user.rows[0].user_password);
     if (!validPassword) {
-        return res.status(401).json({ message: 'Incorrect password' });
-    }
-    */
-    if (user_password !== user.rows[0].user_password) {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
@@ -78,18 +85,20 @@ const getUserById = asyncHandler(async (req, res) => {
 });
 
 
-
-
-
 //update
 
 const updateUser = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const { username, user_password, email } = req.body;
+    
+    //encryption before insertion
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(user_password, salt);
+
     const updateUser = await pool.query(
       'UPDATE loguser SET username = $1, user_password = $2, email = $3 WHERE user_id = $4',
-      [username, user_password, email, id]
+      [username, hashedPassword, email, id]
     );
 
     res.json("User was updated!");
