@@ -12,7 +12,7 @@ const createUser = asyncHandler(async (req, res) => {
     const hashedPassword = await bcrypt.hash(user_password, salt);
 
     const newUser = await pool.query(
-      "INSERT INTO \"loguser\" (username, user_password, email, user_role) VALUES($1, $2, $3) RETURNING *",
+      "INSERT INTO \"loguser\" (username, user_password, email, user_role) VALUES($1, $2, $3, $4) RETURNING *",
       [username, hashedPassword, email, user_role || 'USER']
     );
 
@@ -96,7 +96,7 @@ const updateUser = asyncHandler(async (req, res) => {
     const hashedPassword = await bcrypt.hash(user_password, salt);
 
     const updateUser = await pool.query(
-      'UPDATE loguser SET username = $1, user_password = $2, email = $3 WHERE user_id = $4',
+      'UPDATE loguser SET username = $1, user_password = $2, email = $3, user_role = $4 WHERE user_id = $5',
       [username, hashedPassword, email, user_role || 'USER', id]
     );
 
