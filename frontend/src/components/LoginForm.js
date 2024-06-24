@@ -25,7 +25,7 @@ const LoginForm = () => {
         if (response.data.message === 'Login successful') {
           // Handle successful login
           console.log('User logged in:', response.data.user);
-          navigate(`/welcome/${data.username}`);
+          navigate(`/home`);
         }
       } catch (error) {
         if (error.response) {
@@ -40,7 +40,7 @@ const LoginForm = () => {
         // Send register
         const response = await axios.post('http://localhost:5001/loguser', data)
         console.log(response)
-        navigate(`/${data.username}`);
+        navigate(`/welcome/${data.username}`);
       } catch (error) {// You can handle form submission logic here, e.g., API calls for login or registration
         console.error(error)
       }
