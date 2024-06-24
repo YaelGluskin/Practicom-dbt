@@ -5,45 +5,47 @@ import { TextField, Button, Container, Grid, Typography, IconButton, InputAdornm
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const { handleSubmit, control, formState: { errors } } = useForm();
   const [isLoginMode, setIsLoginMode] = useState(true); // Initially set to login mode
   const [showPassword, setShowPassword] = useState(false); // Password visibility state
+  const navigate = useNavigate() // Hook to navigate to different routes
 
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     console.log(data);
-   
-      if(isLoginMode){
+
+    if (isLoginMode) {
       // Send login request
       //const { username } = data;
       try {
         const response = await axios.post('http://localhost:5001/loguser/login', data);
         console.log(response.data);
         if (response.data.message === 'Login successful') {
-            // Handle successful login
-            console.log('User logged in:', response.data.user);
+          // Handle successful login
+          console.log('User logged in:', response.data.user);
+          navigate(`/home`);
         }
-    } catch (error) {
+      } catch (error) {
         if (error.response) {
-            console.log(error.response.data.message);
+          console.log(error.response.data.message);
         } else {
-            console.error('Error:', error.message);
+          console.error('Error:', error.message);
         }
-    }
-    
+      }
+
     } else {
-      try{
-      // Send register
-      const response = await axios.post('http://localhost:5001/loguser', data)
-      console.log(response)
-      return(<div>you got register</div>)
-    } catch(error)
-    {// You can handle form submission logic here, e.g., API calls for login or registration
-    console.error(error)
-  }
-    
-  }
+      try {
+        // Send register
+        const response = await axios.post('http://localhost:5001/loguser', data)
+        console.log(response)
+        navigate(`/welcome/${data.username}`);
+      } catch (error) {// You can handle form submission logic here, e.g., API calls for login or registration
+        console.error(error)
+      }
+
+    }
   };
 
   const switchMode = () => {
