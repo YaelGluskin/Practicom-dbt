@@ -1,6 +1,13 @@
 import React from 'react';
 import { Typography, Container } from '@mui/material';
 
+/**
+ * Renders the details of an article.
+ *
+ * @param {Object} props - The component props.
+ * @param {Object} props.article - The article object containing the title, summary, and content.
+ * @returns {JSX.Element} The rendered ArticleDetails component.
+ */
 const ArticleDetails = ({ article }) => {
   return (
     <Container>
