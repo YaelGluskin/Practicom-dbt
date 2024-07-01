@@ -2,6 +2,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Container } from '@mui/material';
 
 
+/**
+ * Represents a navigation bar component.
+ * @returns {JSX.Element} The JSX element representing the navigation bar.
+ */
 const NavBar = () => {
 
     const navigate = useNavigate();
@@ -36,12 +40,15 @@ const NavBar = () => {
         </IconButton>
     );
 
+    // The logout will work if the user is registered
+    // This assumes that the registration process sets up the necessary authentication and session management
 
     const logoutButton = (
         <IconButton style={{ color: 'white' }} title="Logout" onClick={onLogoutClicked}>
             {/* <FontAwesomeIcon icon={faRightFromBracket} /> */}
         </IconButton>
     );
+    
 
 
     const buttonContent = (
