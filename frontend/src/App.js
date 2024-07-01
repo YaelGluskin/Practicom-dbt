@@ -6,6 +6,10 @@ import NewUser from './components/NewUser';
 import Home from './components/Home';
 import NavBar from './components/NavBar';
 
+import ArticleForm from './features/ArticleForm';
+import ArticleDetails from './features/ArticleDetails';
+// import ArticleList from './features/ArticleList';
+
 function App() {
   document.title = 'DBT';
   return (
@@ -18,12 +22,20 @@ function App() {
           <Route index element={<Public />} />
           <Route path="login" element={<LoginForm />} />
 
+
           {/* protected routes */}
           <Route path="welcome/:username" element={<NewUser />} />
-          <Route path="home" element={<Home />} />
+
+          <Route path="home">
+            <Route index element={<Home />} />
+            <Route path='newArticle' element={<ArticleForm />} />
+            <Route path='articles/:id/' element={<ArticleDetails />} />
+
+          </Route>
         </Routes>
       </Router>
     </>
+
   );
 }
 
