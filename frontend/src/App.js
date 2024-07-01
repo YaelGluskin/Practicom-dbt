@@ -4,22 +4,26 @@ import Public from './components/Public';
 import LoginForm from './components/LoginForm';
 import NewUser from './components/NewUser';
 import Home from './components/Home';
+import NavBar from './components/NavBar';
 
 function App() {
   document.title = 'DBT';
   return (
-    <Router>
-      <Routes>
-        {/* <Route exact path="/" element = {<Layout/>}/> */}
-        {/* 2 public routes */}
-        <Route index element={<Public />} />
-        <Route path="login" element={<LoginForm />} />
+    <>
+      <Router>
+        <NavBar />
+        <Routes>
+          {/* <Route exact path="/" element = {<Layout/>}/> */}
+          {/* 2 public routes */}
+          <Route index element={<Public />} />
+          <Route path="login" element={<LoginForm />} />
 
-        {/* protected routes */}
-        <Route path="welcome/:username" element={<NewUser />} />
-        <Route path="home" element={<Home />} />
-      </Routes>
-    </Router>
+          {/* protected routes */}
+          <Route path="welcome/:username" element={<NewUser />} />
+          <Route path="home" element={<Home />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 
