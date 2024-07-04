@@ -8,10 +8,10 @@ import NavBar from './components/NavBar';
 
 import ArticleForm from './features/ArticleForm';
 import ArticleDetails from './features/ArticleDetails';
-// import ArticleList from './features/ArticleList';
+ import EditArticle from './features/EditArticle'; // Import the EditArticle component
 
 function App() {
-  document.title = 'DBT';
+  document.title = 'DBT'; // Set the document title
   return (
     <>
       <Router>
@@ -29,8 +29,8 @@ function App() {
           <Route path="home">
             <Route index element={<Home />} />
             <Route path='newArticle' element={<ArticleForm />} />
-            <Route path='articles/:id/' element={<ArticleDetails />} />
-
+            <Route path='article/:id/' element={<ArticleDetails />} />
+            <Route path='article/:id/edit' element={<EditArticle />} />
           </Route>
         </Routes>
       </Router>
