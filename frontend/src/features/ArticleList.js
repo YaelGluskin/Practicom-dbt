@@ -17,9 +17,11 @@ const ArticlesList = ({ option }) => {
     /**
      * Fetches articles based on the selected option.
      */
+    console.log("option: ", option); // Log the selected option to the console for debugging purposes 
     const fetchArticles = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/articles/${option}`);
+        const response = await axios.get(`http://localhost:5001/article/option/${option}`); // Fetch articles by option
+        console.log("fetchArticles: ", response);
         setArticles(response.data); // Update the articles state with the fetched data
         setIsLoading(false); // Set loading state to false
       } catch (error) {
@@ -35,8 +37,8 @@ const ArticlesList = ({ option }) => {
   if (isError) return <Alert severity="error">Error fetching articles</Alert>; // Show an error message if there was an error fetching the articles
 
   return (
-    <Grid container spacing={2} justifyContent="center" alignItems="center">
-      {articles.map(article => (
+    <Grid container spacing={2} justifyContent="center" alignItems="center"> 
+      {articles.map(article => ( // Map over the articles array and render an Article component for each article
         <Article key={article.id} article={article} /> // Render each article component with a unique key
       ))}
     </Grid>

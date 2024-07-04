@@ -12,7 +12,7 @@ const Article = ({ article }) => {
    * Handles the click event when the card is clicked.
    * Navigates to the article details page.
    */
-  const handleEdit = () => navigate(`/articles/${article.id}`);
+  const handleEdit = () => navigate(`/home/article/${article.article_id}`); // Navigate to the article details page
 
   return (
     <Card sx={{ width: 200, height: 200, margin: 1 }} onClick={handleEdit}>

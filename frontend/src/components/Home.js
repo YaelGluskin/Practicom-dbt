@@ -2,15 +2,15 @@ import {Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ArticlesList from '../features/ArticleList';
 
-const Home = () => {
-  const navigate = useNavigate();
-  const options = ['option1', 'option2', 'option3', 'option4', 'option5']; // Replace with your actual options
+const Home = () => {  
+  const navigate = useNavigate(); // Add the useNavigate hook to navigate to the new article form
+  const options = ['1', '2', '3', '4', '5']; // Replace with your actual options
 
-  const handleNewArticle = () => {
-    navigate('/home/newArticle');
+  const handleNewArticle = () => { // Add a new function to handle the new article button click
+    navigate('/home/newArticle'); // Navigate to the new article form
   };
 
-  return (
+  return ( // Replace the JSX in the return statement with the following code
     <Box sx={{ padding: 4 }}>
       <Typography variant="h3" gutterBottom>
         Plan a Trip

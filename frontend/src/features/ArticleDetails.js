@@ -1,14 +1,33 @@
-import React from 'react';
-import { Typography, Container } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Typography, Container, CardMedia , Button, CircularProgress} from '@mui/material';
+import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 
-/**
- * Renders the details of an article.
- *
- * @param {Object} props - The component props.
- * @param {Object} props.article - The article object containing the title, summary, and content.
- * @returns {JSX.Element} The rendered ArticleDetails component.
- */
-const ArticleDetails = ({ article }) => {
+const ArticleDetails = () => { // ArticleDetails component to display article details
+
+  const article_id = useParams();
+  console.log("ArticleDetails: ", article_id); // article_id is an object with the key 'id'
+  console.log("id: ", article_id.id); // article_id.id is the value of the 'id' key
+  const [article, setArticle] = useState(null); // State variable to store the fetched article data
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchArticle = async () => { // Function to fetch article data
+      try {
+        const response = await axios.get(`http://localhost:5001/article/${article_id.id}`); // Fetch article data by id
+        setArticle(response.data); // Update state with fetched article data
+      } catch (error) { // Catch any errors and log them to the console
+        console.error('Error fetching article:', error); // Log any errors to the console 
+      }
+    };
+
+    fetchArticle(); // Call the fetch function when the component mounts
+  }, [article_id]); // Execute fetch when article_id changes
+
+  if (!article) { // Show a loading message if the article data is still being fetched
+    return <CircularProgress />;
+  }
+  console.log("article: ", article);
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
@@ -20,7 +39,19 @@ const ArticleDetails = ({ article }) => {
       <Typography variant="body1">
         {article.content}
       </Typography>
-    </Container>
+
+      <CardMedia
+        component="img"
+        height="140"
+        image={article.image_url}
+        alt={article.title}
+        sx={{ objectFit: 'contain' }} // שימוש ב-objectFit contain
+      />
+
+      <Button variant="contained" color="primary" onClick={() => navigate('edit')}>
+        Edit Article
+      </Button>
+    </Container> 
   );
 };
 

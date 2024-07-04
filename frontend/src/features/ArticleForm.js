@@ -19,15 +19,15 @@ const ArticleForm = () => {
     title: '',
     summary: '',
     content: '',
-    image: null,
-    localImageUrl: '',
+    image_url: null,
+    local_image_path: '',
     option: 1,
     loading: false,
   });
   const [error, setError] = useState(null);
 
   // Destructure the form data for easier access
-  const { title, summary, content, localImageUrl, option, loading } = formData;
+  const { title, summary, content, local_image_path, option, loading } = formData;
 
   /**
    * Event handler for image change.
@@ -41,7 +41,7 @@ const ArticleForm = () => {
     setFormData({
       ...formData,
       image: file,
-      localImageUrl: URL.createObjectURL(file)
+      local_image_path: URL.createObjectURL(file)
     });
   };
 
@@ -65,17 +65,14 @@ const ArticleForm = () => {
         title,
         summary,
         content,
-        imageUrl: localImageUrl,
+        image_url: local_image_path,
         option
       };
 
-      const response = await axios.post('http://localhost:5001/articles', articleData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await axios.post('http://localhost:5001/article/newArticle', articleData);
       console.log('Article created successfully:', response.data);
-      navigate(`/home/articles/${articleData.data}`); // Check 
+      navigate(`/home/article/${response.data.article_id}`); // Check 
+
 
     } catch (error) {
       console.error('Error creating article:', error);
@@ -86,15 +83,9 @@ const ArticleForm = () => {
         loading: false
       });
     }
-    /*
-    setTitle('');
-    setSummary('');
-    setContent('');
-    setImage(null);
-    setLocalImageUrl('');
-    setOption(1); */
+
   };
-  
+
 
   return (
     <Container>
@@ -151,7 +142,7 @@ const ArticleForm = () => {
         </TextField>
         <input
           type="file"
-          accept="image/*"
+          accept="image_url/*"
           onChange={handleImageChange}
           style={{ margin: '20px 0' }}
           required
