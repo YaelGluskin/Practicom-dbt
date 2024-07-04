@@ -22,7 +22,7 @@ router.get('/:id/', getArticleById);
 router.get('/option/:option', getArticlesByOption);
 
 // Update a specific article by ID
-router.put('/:id', updateArticle);
+router.patch('/:id', updateArticle);
 
 // Delete a specific article by ID
 router.delete('/:id', deleteArticle);
