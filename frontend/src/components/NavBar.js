@@ -2,9 +2,6 @@ import React, { useContext } from 'react'; // Import the useContext hook
 import { useNavigate, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Container } from '@mui/material';
 import { UserContext } from '../Hooks/UserContext';  // Import the UserContext
-// import AccountCircle from '@mui/icons-material/AccountCircle';
-// import Logout from '@mui/icons-material/Logout';
-// import ShoppingCart from '@mui/icons-material/ShoppingCart';
 import { ShoppingCart, AccountCircle, Logout } from '@mui/icons-material';
 
 /**
