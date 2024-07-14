@@ -1,6 +1,11 @@
+import React, { useContext } from 'react'; // Import the useContext hook
 import { useNavigate, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Container } from '@mui/material';
-
+import { UserContext } from '../Hooks/UserContext';  // Import the UserContext
+// import AccountCircle from '@mui/icons-material/AccountCircle';
+// import Logout from '@mui/icons-material/Logout';
+// import ShoppingCart from '@mui/icons-material/ShoppingCart';
+import { ShoppingCart, AccountCircle, Logout } from '@mui/icons-material';
 
 /**
  * Represents a navigation bar component.
@@ -9,6 +14,7 @@ import { AppBar, Toolbar, Typography, IconButton, Container } from '@mui/materia
 const NavBar = () => {
 
     const navigate = useNavigate();
+    const { user } = useContext(UserContext); // Get the user from the UserContext
 
     // Handlers for navigation
     //const onHomeClicked = () => navigate('/Home');
@@ -21,20 +27,20 @@ const NavBar = () => {
 
 
 
-    const contactButton = (
+    const contactButton = ( // The contact button to display when the user is not logged in
         <IconButton style={{ color: 'white' }} title="Contact" onClick={onContactClicked}>
             Contact
         </IconButton>
     );
 
 
-    const aboutButton = (
+    const aboutButton = ( // The about button to display when the user is not logged in
         <IconButton style={{ color: 'white' }} title="About" onClick={onAboutClicked}>
             About
         </IconButton>
     );
 
-    const discoverButton = (
+    const discoverButton = ( // The discover button to display when the user is not logged in
         <IconButton style={{ color: 'white' }} title="Discover" onClick={onDiscoverClicked}>
             Discover
         </IconButton>
@@ -43,20 +49,40 @@ const NavBar = () => {
     // The logout will work if the user is registered
     // This assumes that the registration process sets up the necessary authentication and session management
 
-    const logoutButton = (
+    const profileButton = ( // The profile button to display when the user is logged in
+        <IconButton style={{ color: 'white' }} title="Profile" onClick={ () => navigate('/Profile')}>
+            <AccountCircle/>
+        </IconButton>
+    );
+
+    const ShopButton = ( // The shop button to display when the user is logged in
+        <IconButton style={{ color: 'white' }} title="Shop" onClick={ () => navigate('/ShopCart')}>
+            <ShoppingCart/>
+        </IconButton>
+    );
+
+    const logoutButton = ( // The logout button to display when the user is logged in
         <IconButton style={{ color: 'white' }} title="Logout" onClick={onLogoutClicked}>
-            {/* <FontAwesomeIcon icon={faRightFromBracket} /> */}
+            <Logout />
         </IconButton>
     );
     
 
 
-    const buttonContent = (
+    const PublicButtonContent = ( // The buttons to display when the user is not logged in
         <>
             {contactButton}
             {aboutButton}
             {discoverButton}
+        </>
+    );
+
+    const buttonContent = ( // The buttons to display when the user is logged in
+        <>
+            {ShopButton}
+            {profileButton}
             {logoutButton}
+            
         </>
     );
 
@@ -71,7 +97,7 @@ const NavBar = () => {
                             <Link to="/Home" style={{ textDecoration: 'none', color: 'inherit' }}>DBT</Link>
                         </Typography>
                         <nav>
-                            {buttonContent}
+                        {user ? buttonContent : PublicButtonContent}
                         </nav>
                     </Toolbar>
                 </Container>
