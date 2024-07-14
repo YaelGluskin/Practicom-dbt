@@ -2,7 +2,7 @@ import React, { useContext } from 'react'; // Import the useContext hook
 import { useNavigate, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, IconButton, Container } from '@mui/material';
 import { UserContext } from '../Hooks/UserContext';  // Import the UserContext
-import { ShoppingCart, AccountCircle, Logout } from '@mui/icons-material';
+import { ShoppingCart, AccountCircle, Logout, Login, Explore, ContactPage, Info } from '@mui/icons-material';
 
 /**
  * Represents a navigation bar component.
@@ -26,20 +26,28 @@ const NavBar = () => {
 
     const contactButton = ( // The contact button to display when the user is not logged in
         <IconButton style={{ color: 'white' }} title="Contact" onClick={onContactClicked}>
-            Contact
+            {/* Contact  */}
+            <ContactPage/>
         </IconButton>
     );
 
 
     const aboutButton = ( // The about button to display when the user is not logged in
         <IconButton style={{ color: 'white' }} title="About" onClick={onAboutClicked}>
-            About
+            <Info/>
         </IconButton>
     );
 
     const discoverButton = ( // The discover button to display when the user is not logged in
         <IconButton style={{ color: 'white' }} title="Discover" onClick={onDiscoverClicked}>
-            Discover
+            {/* Discover */}
+            <Explore/>
+        </IconButton>
+    );
+
+    const loginButton = ( // The login button to display when the user is not logged in
+        <IconButton style={{ color: 'white' }} title="login" onClick={() => navigate('/login')}>
+            <Login/>
         </IconButton>
     );
 
@@ -71,6 +79,7 @@ const NavBar = () => {
             {contactButton}
             {aboutButton}
             {discoverButton}
+            {loginButton}
         </>
     );
 
