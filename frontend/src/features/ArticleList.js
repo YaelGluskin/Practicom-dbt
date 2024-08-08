@@ -21,7 +21,7 @@ const ArticlesList = ({ option }) => {
     const fetchArticles = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/article/option/${option}`); // Fetch articles by option
-        console.log("fetchArticles: ", response);
+        // console.log("fetchArticles: ", response);
         setArticles(response.data); // Update the articles state with the fetched data
         setIsLoading(false); // Set loading state to false
       } catch (error) {

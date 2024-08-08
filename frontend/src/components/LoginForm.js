@@ -1,35 +1,42 @@
 // Import necessary dependencies
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Container, Grid, Typography, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../Hooks/UserContext';   // Import the UserContext
+import Alert from '@mui/material/Alert';
+
 
 const LoginForm = () => {
   const { handleSubmit, control, formState: { errors } } = useForm();
   const [isLoginMode, setIsLoginMode] = useState(true); // Initially set to login mode
+  const [errorLog, setErrorLog] = useState(null); // Error state
   const [showPassword, setShowPassword] = useState(false); // Password visibility state
   const navigate = useNavigate() // Hook to navigate to different routes
 
+  const { setUser } = useContext(UserContext);  // Get the setUser function from the UserContext
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
 
     if (isLoginMode) {
       // Send login request
-      //const { username } = data;
       try {
         const response = await axios.post('http://localhost:5001/loguser/login', data);
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data.message === 'Login successful') {
           // Handle successful login
           console.log('User logged in:', response.data.user);
+          setUser(data.username); // Set the user in the context
           navigate(`/home`);
         }
       } catch (error) {
         if (error.response) {
           console.log(error.response.data.message);
+          setErrorLog(error.response.data.message);
+           
         } else {
           console.error('Error:', error.message);
         }
@@ -40,6 +47,7 @@ const LoginForm = () => {
         // Send register
         const response = await axios.post('http://localhost:5001/loguser', data)
         console.log(response)
+        setUser(data.username); // Set the user in the context
         navigate(`/welcome/${data.username}`);
       } catch (error) {// You can handle form submission logic here, e.g., API calls for login or registration
         console.error(error)
@@ -159,6 +167,7 @@ const LoginForm = () => {
           </Grid>
         </Grid>
       </form>
+      {errorLog && <Alert severity="error">{errorLog}</Alert>} 
     </Container>
   );
 };
