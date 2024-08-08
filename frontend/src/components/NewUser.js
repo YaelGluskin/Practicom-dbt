@@ -6,17 +6,19 @@ function Welcome() {
   const { username } = useParams();
   const navigate = useNavigate();
 
-  const handleGoHome = () => {
-    navigate('/home');
-  };
-
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '50vh' }}>
       <Typography variant="h4" component="h2" gutterBottom>
         Welcome, {username}!
       </Typography>
-      <Button variant="contained" color="primary" onClick={handleGoHome} fullWidth>
+      <Button variant="contained" color="primary" onClick={() => {navigate('/Home')}} fullWidth>
         Go to Home
+      </Button>
+      
+      <div style={{ marginTop: '10px' }}></div>
+      
+      <Button variant="contained" color="primary" onClick={() => {navigate('/Questionnaire')}} fullWidth>
+        Add Your Preferences
       </Button>
     </Container>
   );
