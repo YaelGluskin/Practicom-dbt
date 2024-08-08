@@ -9,7 +9,9 @@ import NavBar from './components/NavBar';
 import ArticleForm from './features/ArticleForm';
 import ArticleDetails from './features/ArticleDetails';
 import EditArticle from './features/EditArticle'; // Import the EditArticle component
+
 import { UserProvider } from './Hooks/UserContext'; // Import the UserProvider
+import Questionnaire from './features/Questionnaire/Questionnaire';
 
 function App() {
   document.title = 'DBT'; // Set the document title
@@ -33,6 +35,8 @@ function App() {
             <Route path='article/:id/' element={<ArticleDetails />} />
             <Route path='article/:id/edit' element={<EditArticle />} />
           </Route>
+
+          <Route path="questionnaire" element={<Questionnaire />} />
         </Routes>
       </Router>
     </UserProvider>
