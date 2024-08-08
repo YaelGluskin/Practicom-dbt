@@ -7,10 +7,13 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../Hooks/UserContext';   // Import the UserContext
+import Alert from '@mui/material/Alert';
+
 
 const LoginForm = () => {
   const { handleSubmit, control, formState: { errors } } = useForm();
   const [isLoginMode, setIsLoginMode] = useState(true); // Initially set to login mode
+  const [errorLog, setErrorLog] = useState(null); // Error state
   const [showPassword, setShowPassword] = useState(false); // Password visibility state
   const navigate = useNavigate() // Hook to navigate to different routes
 
@@ -19,6 +22,7 @@ const LoginForm = () => {
     // console.log(data);
 
     if (isLoginMode) {
+      // Send login request
       try {
         const response = await axios.post('http://localhost:5001/loguser/login', data);
         // console.log(response.data);
@@ -31,6 +35,8 @@ const LoginForm = () => {
       } catch (error) {
         if (error.response) {
           console.log(error.response.data.message);
+          setErrorLog(error.response.data.message);
+           
         } else {
           console.error('Error:', error.message);
         }
@@ -161,6 +167,7 @@ const LoginForm = () => {
           </Grid>
         </Grid>
       </form>
+      {errorLog && <Alert severity="error">{errorLog}</Alert>} 
     </Container>
   );
 };
