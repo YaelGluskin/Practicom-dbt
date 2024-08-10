@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Public from './components/Public';
 import LoginForm from './components/LoginForm';
+import LogOut from './components/LogOut';
 import NewUser from './components/NewUser';
 import Home from './components/Home';
 import NavBar from './components/NavBar';
@@ -24,6 +25,7 @@ function App() {
           {/* 2 public routes */}
           <Route index element={<Public />} />
           <Route path="login" element={<LoginForm />} />
+          <Route path="logout" element={<LogOut />} />
 
 
           {/* protected routes */}
