@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Typography, Container, CardMedia , Button, CircularProgress} from '@mui/material';
+import React, { useEffect, useState, useContext } from 'react';
+import { Typography, Container, CardMedia, Button, CircularProgress } from '@mui/material';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { UserContext } from '../Hooks/UserContext';
+
 
 const ArticleDetails = () => { // ArticleDetails component to display article details
 
@@ -10,6 +12,7 @@ const ArticleDetails = () => { // ArticleDetails component to display article de
   console.log("id: ", article_id.id); // article_id.id is the value of the 'id' key
   const [article, setArticle] = useState(null); // State variable to store the fetched article data
   const navigate = useNavigate();
+  const {user} = useContext(UserContext);
 
   useEffect(() => {
     const fetchArticle = async () => { // Function to fetch article data
@@ -48,10 +51,12 @@ const ArticleDetails = () => { // ArticleDetails component to display article de
         sx={{ objectFit: 'contain' }} // שימוש ב-objectFit contain
       />
 
-      <Button variant="contained" color="primary" onClick={() => navigate('edit')}>
-        Edit Article
-      </Button>
-    </Container> 
+      {user && user.user_role === 'Admin' &&
+        <Button variant="contained" color="primary" onClick={() => navigate('edit')}>
+          Edit Article
+        </Button>
+      }
+    </Container>
   );
 };
 
