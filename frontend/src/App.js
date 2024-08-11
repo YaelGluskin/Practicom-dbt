@@ -13,6 +13,8 @@ import EditArticle from './features/EditArticle'; // Import the EditArticle comp
 
 import { UserProvider } from './Hooks/UserContext'; // Import the UserProvider
 import Questionnaire from './features/Questionnaire/Questionnaire';
+import Admin from './components/Admin/Admin';
+import ArticleTablet from './features/ArticleTable';
 
 function App() {
   document.title = 'DBT'; // Set the document title
@@ -35,17 +37,19 @@ function App() {
             <Route index element={<Home />} />
             <Route path='newArticle' element={<ArticleForm />} />
             <Route path='article/:id/' element={<ArticleDetails />} />
-            <Route path='article/:id/edit' element={<EditArticle />} />
+            <Route path='AdminArea' element={<Admin />}/>
+            <Route path='AdminArea/articleTable' element={<ArticleTablet />} />
+            <Route path='AdminArea/articleTable/:id/edit' element={<EditArticle />} />
           </Route>
 
-          <Route path="questionnaire" element={<Questionnaire />} />
+            <Route path="questionnaire" element={<Questionnaire />} />
         </Routes>
       </Router>
     </UserProvider>
 
   );
 
-  
+
 }
 
 export default App;
