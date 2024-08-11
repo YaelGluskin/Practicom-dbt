@@ -52,7 +52,7 @@ const ArticleDetails = () => { // ArticleDetails component to display article de
       />
 
       {user && user.user_role === 'Admin' &&
-        <Button variant="contained" color="primary" onClick={() => navigate('edit')}>
+        <Button variant="contained" color="primary" onClick={() => navigate(`/home/AdminArea/articleTable/${article_id.id}/edit`)}>
           Edit Article
         </Button>
       }

@@ -18,7 +18,7 @@ const Home = () => {
         Plan a Trip
       </Typography>
       {user && user.user_role === 'Admin' &&
-        <Button type="button" variant="contained" color="success" onClick={() => { navigate('/AdminArea') }}>
+        <Button type="button" variant="contained" color="success" onClick={() => { navigate('AdminArea') }}>
           Admin Area
         </Button>
       }
