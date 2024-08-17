@@ -3,11 +3,15 @@ import axios from 'axios';
 import Article from './Article';
 import { Button, CircularProgress, Alert, Card, CardContent, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { set } from 'react-hook-form';
 
 const ArticlTablet = () => {
     const [articles, setArticles] = useState([]); // State variable to store the fetched articles
     const [isLoading, setIsLoading] = useState(true); // State variable to track loading state
     const [isError, setIsError] = useState(false); // State variable to track error state
+
+    const [isSuccess, setIsSuccess] = useState(false); // State variable to track success state
+    const [searchQuery, setSearchQuery] = useState(""); // State variable to store the search query
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,6 +21,7 @@ const ArticlTablet = () => {
                 console.log("fetchArticles: ", response);
                 setArticles(response.data); // Update the articles state with the fetched data
                 setIsLoading(false); // Set loading state to false
+                setIsSuccess(true); // Set success state to true
             } catch (error) {
                 setIsError(true); // Set error state to true
                 setIsLoading(false); // Set loading state to false
@@ -28,9 +33,28 @@ const ArticlTablet = () => {
     if (isLoading) return <CircularProgress />; // Show a loading spinner if the data is still being fetched
     if (isError) return <Alert severity="error">Error fetching articles</Alert>; // Show an error message if there was an error fetching the articles
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+    // if (isSuccess) {
+        const { labels } = articles // Generate table rows for each client
+
+        const filteredarticles = articles.ids?.filter(option => {
+            const article = articles.entities[option];
+            console.log("article: ", article);
+            return article.option.includes(searchQuery);
+        });
+    // }
+    
     return (
         <div>
-            {articles.map((article) => (
+            <input
+                type="text"
+                placeholder="Search by label"
+                value={searchQuery}
+                onChange={handleSearchChange}
+            />
+            {filteredarticles?.map((article) => (
                 <Card key={article.id} style={{ marginBottom: '20px' }}>
                     <CardContent>
                         <Typography variant="h5">{article.title}</Typography>

@@ -22,6 +22,7 @@ const Home = () => {
           Admin Area
         </Button>
       }
+      {/* {user && } */}
       <br />
       <br />
       {options.map((option, index) => (

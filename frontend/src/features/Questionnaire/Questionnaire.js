@@ -102,7 +102,12 @@ const Questionnaire = () => {
 
     const handleSubmit = (event) => { // Define the handleSubmit function
         event.preventDefault(); // Prevent the default form submission
-        if (selectedPurpose && selectedPreferences.length > 0 && keywords.length > 0 && startDate && endDate &&
+        // Add valid check to dates 
+        const today = new Date();
+        if (startDate <= today || endDate <= today) {
+            alert('Please select a date after today.');
+            return;
+        }        if (selectedPurpose && selectedPreferences.length > 0 && keywords.length > 0 && startDate && endDate &&
             selectEdendurance &&  budget
          ) { // Check if all fields are filled in
             if (budget < 1000) {
@@ -198,6 +203,7 @@ const Questionnaire = () => {
                                         label="Start Date"
                                         inputFormat="DD/MM/YYYY"
                                         value={startDate}
+                                        
                                         onChange={(newValue) => setStartDate(newValue)}
                                         minDate={dayjs()}
                                         renderInput={(params) => <TextField {...params} fullWidth />}
