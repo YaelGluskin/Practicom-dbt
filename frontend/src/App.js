@@ -15,6 +15,9 @@ import { UserProvider } from './Hooks/UserContext'; // Import the UserProvider
 import Questionnaire from './features/Questionnaire/Questionnaire';
 import Admin from './components/Admin/Admin';
 import ArticleTablet from './features/ArticleTable';
+import Profile from './features/Profile/Profile';
+import UsersTable from './components/Admin/UsersTable';
+import CreateUserForm from './components/Admin/CreateUserForm';
 
 function App() {
   document.title = 'DBT'; // Set the document title
@@ -36,13 +39,18 @@ function App() {
           <Route path="home">
             <Route index element={<Home />} />
             <Route path='newArticle' element={<ArticleForm />} />
+
             <Route path='article/:id/' element={<ArticleDetails />} />
             <Route path='AdminArea' element={<Admin />}/>
             <Route path='AdminArea/articleTable' element={<ArticleTablet />} />
-            <Route path='AdminArea/articleTable/:id/edit' element={<EditArticle />} />
+            <Route path='AdminArea/usersTable' element={<UsersTable />} />
+            <Route path='AdminArea/createUser' element={<CreateUserForm />} />
+            {/* <Route path='AdminArea/articleTable/:id/edit' element={<EditArticle />} /> */}
           </Route>
 
             <Route path="questionnaire" element={<Questionnaire />} />
+            <Route path="profile" element={<Profile />} />
+            
         </Routes>
       </Router>
     </UserProvider>
