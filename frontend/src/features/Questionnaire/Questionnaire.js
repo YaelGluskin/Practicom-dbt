@@ -11,33 +11,8 @@ import dayjs from 'dayjs'; // Import the dayjs library
 import { UserContext } from '../../Hooks/UserContext';  // Import the UserContext
 import axios from 'axios'; // Import the axios library
 import PlaceSearch from './PlaceSearch';
+import {labels} from '../Labels/Labels'; // Import the labels array
 
-
-const preferences = [ // Define the preferences array
-    "Limit Live Event",
-    "Theater",
-    "Extreme",
-    "History",
-    "National Parks",
-    "Beaches",
-    "Caves",
-    "Cliffs",
-    "Mountains",
-    // "Waterfalls",
-    // "Islands",
-    // "Forest",
-    // "Entertainment Parks",
-    // "Wildlife Attractions",
-    // "Museums And Art Galleries",
-    // "Unique Built Attractions",
-    // "Sport Attractions",
-    // "Participating Sport Attractions",
-    // "Stadium Tours",
-    // "Special Events",
-    // "Markets",
-    // "Festivals And Parades",
-    "Exhibitions"
-];
 
 const Questionnaire = () => {
     const [selectedPreferences, setSelectedPreferences] = useState([]); // Add the selectedPreferences state variable
@@ -163,7 +138,7 @@ const Questionnaire = () => {
                 />
                 <Typography variant="subtitle1">You may choose 3 labels:</Typography>
                 <Grid container spacing={2}>
-                    {preferences.map((preference, index) => (
+                    {labels.map((preference, index) => (
                         <Grid item xs={12} sm={6} key={index}>
                             <FormControlLabel
                                 control={
