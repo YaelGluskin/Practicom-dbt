@@ -8,9 +8,9 @@ const Home = () => {
   const navigate = useNavigate(); // Add the useNavigate hook to navigate to the new article form
   const options = ['1', '2', '3', '4', '5']; // Replace with your actual options
   const { user } = useContext(UserContext); // Get the user from the UserContext
-  const handleNewArticle = () => { // Add a new function to handle the new article button click
-    navigate('articleTable'); // Navigate to the new article form
-  };
+  // const handleNewArticle = () => { // Add a new function to handle the new article button click
+  //   navigate('articleTable'); // Navigate to the new article form
+  // };
   console.log(user);
   return ( // Replace the JSX in the return statement with the following code
     <Box sx={{ padding: 4 }}>
