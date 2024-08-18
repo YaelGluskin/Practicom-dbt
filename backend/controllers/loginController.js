@@ -26,9 +26,8 @@ const createUser = asyncHandler(async (req, res) => {
 //get all
 
 const getAllUsers = asyncHandler(async (req, res) => {
-  console.log("getAllUsers")
   try {
-    const allUsers = await pool.query('SELECT * FROM loguser');
+    const allUsers = await pool.query('SELECT * FROM loguser  ORDER BY user_id ASC');
     res.json(allUsers.rows);
   } catch (err) {
     console.error(err.message);

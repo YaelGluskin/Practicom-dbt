@@ -26,7 +26,7 @@ const createArticle = asyncHandler(async (req, res) => { // Controller function 
 const getAllArticles = asyncHandler(async (req, res) => { // Controller function to get all articles from the database
     // console.log("getAllArticles: -", req.body); // Log the request body to the console for debugging purposes
     try { // Try to execute the following code block
-        const allArticles = await pool.query('SELECT * FROM "article"'); // Get all articles from the database
+        const allArticles = await pool.query('SELECT * FROM "article" ORDER BY created_at ASC '); // Get all articles from the database
         res.json(allArticles.rows); // Return the articles as JSON
     } catch (err) { // Catch any errors and log them to the console
         console.error(err.message); // Log the error message to the console

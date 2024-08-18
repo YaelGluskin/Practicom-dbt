@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
     Box, RadioGroup, Radio, Checkbox, FormControlLabel,TextField,
     Button, FormControl, FormLabel, Typography, Grid, IconButton
@@ -9,6 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Import the A
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'; // Import the LocalizationProvider component
 import dayjs from 'dayjs'; // Import the dayjs library
 import CloseIcon from '@mui/icons-material/Close';
+import { UserContext } from '../../Hooks/UserContext';  // Import the UserContext
 
 const preferences = [ // Define the preferences array
     "Limit Live Event",
@@ -69,9 +70,14 @@ const Questionnaire = () => {
         setKeywords(newKeywords);
     };
 
-
-
-
+    const { user } = useContext(UserContext); // Get the user from the UserContext
+    const [user_id, setUser_id] = useState(null); // Add the user_id state variable
+    // Update user_id when user context changes
+    useEffect(() => {
+        if (user) {
+            setUser_id(user.user_id);
+        }
+    }, [user]);
 
     const [selectedPurpose, setSelectedPurpose] = useState(''); // Purpose state variable and setPurpose function
     const handlePurposeChange = (event) => { // Handle the purpose change
@@ -101,8 +107,18 @@ const Questionnaire = () => {
     const [budget, setBudget] = useState();  // Add the budget state variable
 
     const handleSubmit = (event) => { // Define the handleSubmit function
+        if(!user) {
+            alert('Please log in to submit the Questionnaire.'); // Alert the user to log in
+            navigate('/login'); // Navigate to the login page
+            return;
+        }
         event.preventDefault(); // Prevent the default form submission
-        if (selectedPurpose && selectedPreferences.length > 0 && keywords.length > 0 && startDate && endDate &&
+        // Add valid check to dates 
+        const today = new Date();
+        if (startDate <= today || endDate <= today) {
+            alert('Please select a date after today.');
+            return;
+        }        if (selectedPurpose && selectedPreferences.length > 0 && keywords.length > 0 && startDate && endDate &&
             selectEdendurance &&  budget
          ) { // Check if all fields are filled in
             if (budget < 1000) {
@@ -116,7 +132,8 @@ const Questionnaire = () => {
             startDate,
             endDate,
             selectEdendurance,
-            budget
+            budget,
+            user_id // Add the user_id
           };
           console.log(formData); // Log the form data
           navigate('/home'); // Navigate to the home page
@@ -198,6 +215,7 @@ const Questionnaire = () => {
                                         label="Start Date"
                                         inputFormat="DD/MM/YYYY"
                                         value={startDate}
+                                        
                                         onChange={(newValue) => setStartDate(newValue)}
                                         minDate={dayjs()}
                                         renderInput={(params) => <TextField {...params} fullWidth />}

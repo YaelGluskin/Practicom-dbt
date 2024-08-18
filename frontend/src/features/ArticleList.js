@@ -17,7 +17,7 @@ const ArticlesList = ({ option }) => {
     /**
      * Fetches articles based on the selected option.
      */
-    console.log("option: ", option); // Log the selected option to the console for debugging purposes 
+    // console.log("option: ", option); // Log the selected option to the console for debugging purposes 
     const fetchArticles = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/article/option/${option}`); // Fetch articles by option

@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Public from './components/Public';
 import LoginForm from './components/LoginForm';
+import LogOut from './components/LogOut';
 import NewUser from './components/NewUser';
 import Home from './components/Home';
 import NavBar from './components/NavBar';
@@ -12,6 +13,11 @@ import EditArticle from './features/EditArticle'; // Import the EditArticle comp
 
 import { UserProvider } from './Hooks/UserContext'; // Import the UserProvider
 import Questionnaire from './features/Questionnaire/Questionnaire';
+import Admin from './components/Admin/Admin';
+import ArticleTablet from './features/ArticleTable';
+import Profile from './features/Profile/Profile';
+import UsersTable from './components/Admin/UsersTable';
+import CreateUserForm from './components/Admin/CreateUserForm';
 
 function App() {
   document.title = 'DBT'; // Set the document title
@@ -24,6 +30,7 @@ function App() {
           {/* 2 public routes */}
           <Route index element={<Public />} />
           <Route path="login" element={<LoginForm />} />
+          <Route path="logout" element={<LogOut />} />
 
 
           {/* protected routes */}
@@ -32,18 +39,25 @@ function App() {
           <Route path="home">
             <Route index element={<Home />} />
             <Route path='newArticle' element={<ArticleForm />} />
+
             <Route path='article/:id/' element={<ArticleDetails />} />
-            <Route path='article/:id/edit' element={<EditArticle />} />
+            <Route path='AdminArea' element={<Admin />}/>
+            <Route path='AdminArea/articleTable' element={<ArticleTablet />} />
+            <Route path='AdminArea/usersTable' element={<UsersTable />} />
+            <Route path='AdminArea/createUser' element={<CreateUserForm />} />
+            {/* <Route path='AdminArea/articleTable/:id/edit' element={<EditArticle />} /> */}
           </Route>
 
-          <Route path="questionnaire" element={<Questionnaire />} />
+            <Route path="questionnaire" element={<Questionnaire />} />
+            <Route path="profile" element={<Profile />} />
+            
         </Routes>
       </Router>
     </UserProvider>
 
   );
 
-  
+
 }
 
 export default App;
