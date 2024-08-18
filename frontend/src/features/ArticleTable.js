@@ -1,78 +1,215 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Article from './Article';
-import { Button, CircularProgress, Alert, Card, CardContent, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { set } from 'react-hook-form';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
+import api from '../services/api'; // Import the api instance
 
-const ArticlTablet = () => {
-    const [articles, setArticles] = useState([]); // State variable to store the fetched articles
-    const [isLoading, setIsLoading] = useState(true); // State variable to track loading state
-    const [isError, setIsError] = useState(false); // State variable to track error state
-
-    const [isSuccess, setIsSuccess] = useState(false); // State variable to track success state
-    const [searchQuery, setSearchQuery] = useState(""); // State variable to store the search query
-    const navigate = useNavigate();
+const ArticleTable = () => {
+    const [articles, setArticles] = useState([]);
+    const [searchTitle, setSearchTitle] = useState('');
+    const [searchOption, setSearchOption] = useState('');
+    const [editingId, setEditingId] = useState(null);
+    const [editValues, setEditValues] = useState({});
 
     useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5001/article/`); // Fetch articles by option
-                console.log("fetchArticles: ", response);
-                setArticles(response.data); // Update the articles state with the fetched data
-                setIsLoading(false); // Set loading state to false
-                setIsSuccess(true); // Set success state to true
-            } catch (error) {
-                setIsError(true); // Set error state to true
-                setIsLoading(false); // Set loading state to false
-            }
-
-        }; fetchArticles(); // Call the fetchArticles function when the component mounts or when the option changes
+        fetchArticles();
     }, []);
-    console.log("articles: ", articles);
-    if (isLoading) return <CircularProgress />; // Show a loading spinner if the data is still being fetched
-    if (isError) return <Alert severity="error">Error fetching articles</Alert>; // Show an error message if there was an error fetching the articles
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
+    const fetchArticles = async () => {
+        try {
+            const response = await api.get('/article'); // Use the api instance here
+            setArticles(response.data);
+        } catch (error) {
+            console.error('Error fetching articles:', error);
+        }
     };
-    // if (isSuccess) {
-        const { labels } = articles // Generate table rows for each client
+    /* // No need couse we have a food filter
+      const handleSearch = async () => {
+        try {
+          const response = await api.get('/article/search', {
+            params: {
+              title: searchTitle,
+              option: searchOption
+            }
+          });
+          setArticles(response.data);
+        } catch (error) {
+          console.error('Error searching articles:', error);
+        }
+      }; */
 
-        const filteredarticles = articles.ids?.filter(option => {
-            const article = articles.entities[option];
-            console.log("article: ", article);
-            return article.option.includes(searchQuery);
+    const handleEdit = (article) => {
+        setEditingId(article.article_id);
+        setEditValues(article);
+    };
+
+    const handleDelete = async (id) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this article?");
+        if (confirmDelete) {
+            try {
+                await api.delete(`/article/${id}`); // Use the api instance here
+                fetchArticles();
+            } catch (error) {
+                console.error('Error deleting article:', error);
+            }
+        }
+    };
+
+    const handleSave = async (id) => {
+        try {
+            await api.patch(`/article/${id}`, editValues); // Use the api instance here
+            fetchArticles();
+            setEditingId(null);
+        } catch (error) {
+            console.error('Error updating article:', error);
+        }
+    };
+
+    //   const handleDelete = async (id) => {
+
+    //     try {
+    //       await api.delete(`/article/${id}`); // Use the api instance here
+    //       fetchArticles();
+    //     } catch (error) {
+    //       console.error('Error deleting article:', error);
+    //     }
+    //   };
+
+    const handleInputChange = (e) => {
+        setEditValues({
+            ...editValues,
+            [e.target.name]: e.target.value
         });
-    // }
-    
+    };
+
+    const filteredArticles = articles.filter(article =>
+        article.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
+        (searchOption === '' || article.option === parseInt(searchOption))
+    );
+
     return (
         <div>
-            <input
-                type="text"
-                placeholder="Search by label"
-                value={searchQuery}
-                onChange={handleSearchChange}
+            <TextField
+                label="Search by Title"
+                value={searchTitle}
+                onChange={(e) => setSearchTitle(e.target.value)}
+                variant="outlined"
+                margin="normal"
             />
-            {filteredarticles?.map((article) => (
-                <Card key={article.id} style={{ marginBottom: '20px' }}>
-                    <CardContent>
-                        <Typography variant="h5">{article.title}</Typography>
-                        <Typography variant="body1" paragraph>
-                            {article.summary}
-                        </Typography>
-                        <Typography variant="body1">
-                            {article.content}
-                        </Typography>
-                        <Button variant="contained" color="primary" onClick={() => navigate(`${article.article_id}/edit`)}>
-                            Edit Article
-                        </Button>
-                        {/* Add more fields as necessary */}
-                    </CardContent>
-                </Card>
-            ))}
+            <TextField
+                label="Search by Option"
+                value={searchOption}
+                onChange={(e) => setSearchOption(e.target.value)}
+                variant="outlined"
+                margin="normal"
+            />
+            {/* <Button variant="contained" onClick={handleSearch}>Search</Button> */}
+
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>ID</TableCell>
+                            <TableCell>Title</TableCell>
+                            <TableCell>Summary</TableCell>
+                            <TableCell>Content</TableCell>
+                            <TableCell>Image URL</TableCell>
+                            <TableCell>Option</TableCell>
+                            <TableCell>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {filteredArticles.map((article) => (
+                            <TableRow key={article.article_id}>
+                                <TableCell>{article.article_id}</TableCell>
+                                <TableCell>
+                                    {editingId === article.article_id ? (
+                                        <TextField
+                                            name="title"
+                                            value={editValues.title || ''}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        article.title
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {editingId === article.article_id ? (
+                                        <TextField
+                                            name="summary"
+                                            value={editValues.summary || ''}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        article.summary
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {editingId === article.article_id ? (
+                                        <TextField
+                                            name="content"
+                                            value={editValues.content || ''}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        article.content
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {editingId === article.article_id ? (
+                                        <TextField
+                                            name="image_url"
+                                            value={editValues.image_url || ''}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        article.image_url
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {editingId === article.article_id ? (
+                                        <TextField
+                                            name="local_image_path"
+                                            value={editValues.local_image_path || ''}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        article.local_image_path
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {editingId === article.article_id ? (
+                                        <TextField
+                                            name="option"
+                                            value={editValues.option || ''}
+                                            onChange={handleInputChange}
+                                        />
+                                    ) : (
+                                        article.option
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {editingId === article.article_id ? (
+                                        <IconButton onClick={() => handleSave(article.article_id)}>
+                                            <SaveIcon />
+                                        </IconButton>
+                                    ) : (
+                                        <IconButton onClick={() => handleEdit(article)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    )}
+                                    <IconButton onClick={() => handleDelete(article.article_id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
     );
-}
+};
 
-export default ArticlTablet; 
+export default ArticleTable;
