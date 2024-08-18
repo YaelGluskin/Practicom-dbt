@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, IconButton } from '@mui/material';
+import {
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, IconButton
+    , Select, MenuItem, Chip, FormControl, InputLabel
+} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import api from '../services/api'; // Import the api instance
+import { labels } from './Labels/Labels'; // Import the preferences array
 
 const ArticleTable = () => {
     const [articles, setArticles] = useState([]);
     const [searchTitle, setSearchTitle] = useState('');
-    const [searchOption, setSearchOption] = useState('');
+    const [searchLabels, setSearchLabels] = useState('');
     const [editingId, setEditingId] = useState(null);
     const [editValues, setEditValues] = useState({});
 
@@ -24,20 +28,6 @@ const ArticleTable = () => {
             console.error('Error fetching articles:', error);
         }
     };
-    /* // No need couse we have a food filter
-      const handleSearch = async () => {
-        try {
-          const response = await api.get('/article/search', {
-            params: {
-              title: searchTitle,
-              option: searchOption
-            }
-          });
-          setArticles(response.data);
-        } catch (error) {
-          console.error('Error searching articles:', error);
-        }
-      }; */
 
     const handleEdit = (article) => {
         setEditingId(article.article_id);
@@ -83,10 +73,19 @@ const ArticleTable = () => {
         });
     };
 
+    const handleLabelsChange = (event) => {
+        const { value } = event.target;
+        setEditValues({
+            ...editValues,
+            labels: typeof value === 'string' ? value.split(',') : value,
+        });
+    };
+
     const filteredArticles = articles.filter(article =>
         article.title.toLowerCase().includes(searchTitle.toLowerCase()) &&
-        (searchOption === '' || article.option === parseInt(searchOption))
+        article.labels.some(label => label.toLowerCase().includes(searchLabels.toLowerCase()))
     );
+    
 
     return (
         <div>
@@ -99,8 +98,8 @@ const ArticleTable = () => {
             />
             <TextField
                 label="Search by Option"
-                value={searchOption}
-                onChange={(e) => setSearchOption(e.target.value)}
+                value={searchLabels}
+                onChange={(e) => setSearchLabels(e.target.value)}
                 variant="outlined"
                 margin="normal"
             />
@@ -115,7 +114,7 @@ const ArticleTable = () => {
                             <TableCell>Summary</TableCell>
                             <TableCell>Content</TableCell>
                             <TableCell>Image URL</TableCell>
-                            <TableCell>Option</TableCell>
+                            <TableCell>Labels</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
@@ -167,28 +166,47 @@ const ArticleTable = () => {
                                         article.image_url
                                     )}
                                 </TableCell>
-                                <TableCell>
+
+                                {/* <TableCell>
                                     {editingId === article.article_id ? (
                                         <TextField
-                                            name="local_image_path"
-                                            value={editValues.local_image_path || ''}
+                                            name="labels"
+                                            value={editValues.labels || ''}
                                             onChange={handleInputChange}
                                         />
                                     ) : (
-                                        article.local_image_path
+                                        article.label
                                     )}
-                                </TableCell>
+                                </TableCell> */}
                                 <TableCell>
                                     {editingId === article.article_id ? (
-                                        <TextField
-                                            name="option"
-                                            value={editValues.option || ''}
-                                            onChange={handleInputChange}
-                                        />
+                                        <FormControl fullWidth variant="outlined">
+                                            <InputLabel>Labels</InputLabel>
+                                            <Select
+                                                name="labels"
+                                                multiple
+                                                value={editValues.labels || []}
+                                                onChange={handleLabelsChange}
+                                                renderValue={(selected) => (
+                                                    <div>
+                                                        {selected.map((value) => (
+                                                            <Chip key={value} label={value} />
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            >
+                                                {labels.map((label) => (
+                                                    <MenuItem key={label} value={label}>
+                                                        {label}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
                                     ) : (
-                                        article.option
+                                        (article.labels || []).join(', ')  // Updated to handle null or undefined
                                     )}
                                 </TableCell>
+
                                 <TableCell>
                                     {editingId === article.article_id ? (
                                         <IconButton onClick={() => handleSave(article.article_id)}>
