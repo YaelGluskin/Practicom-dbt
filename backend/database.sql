@@ -19,3 +19,15 @@ CREATE TABLE article(
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+CREATE TABLE questionnaire (
+    questionnaire_id SERIAL PRIMARY KEY,
+    user_id INT UNIQUE REFERENCES loguser(user_id) ON DELETE CASCADE, -- Foreign key referencing loguser
+    selectedPreferences TEXT[],    -- Array of selected preferences
+    selectedplace VARCHAR(100),                 -- Array of keywords (destinations)
+    selectedPurpose VARCHAR(50),    -- Purpose of the trip
+    selectedEndurance VARCHAR(50),  -- Endurance level
+    startDate DATE,                 -- Start date of the trip
+    endDate DATE,                   -- End date of the trip
+    budget INT                       -- Budget for the trip
+);
