@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button, IconButton } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,6 +25,7 @@ const UsersTable = () => {
         }
     };
 
+    /* // No need couse we have a f\good filter
     const handleSearch = async () => {
         try {
             const filteredUsers = users.filter(user =>
@@ -35,7 +36,7 @@ const UsersTable = () => {
         } catch (error) {
             console.error('Error searching users:', error);
         }
-    };
+    }; */
 
     const handleEdit = (user) => {
         setEditingId(user.user_id);
