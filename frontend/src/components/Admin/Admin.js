@@ -8,22 +8,15 @@ const Admin = () => {
     const navigate = useNavigate();
 
     const handleViewAllUsers = () => {
-        // Handle logic for viewing all users
-        // Replace with your own implementation
-        console.log('View all users');
+        navigate('usersTable');
     };
 
     const handleViewAllArticle = () => {
-        // Handle logic for viewing all addresses
-        // Replace with your own implementation
-        console.log('View all addresses');
         navigate('articleTable');
     };
 
     const handleCreateUser = () => {
-        // Handle logic for creating a new user
-        // Replace with your own implementation
-        console.log('Create new user');
+        navigate('createUser');
     };
 
     return (
