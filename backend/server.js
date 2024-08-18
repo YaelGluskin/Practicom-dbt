@@ -11,6 +11,7 @@ app.use(express.json()); //req.body
 //ROUTES//
 app.use('/loguser', require('./routes/loginRoutes'))
 app.use('/article', require('./routes/articleRoutes'));
+app.use('/questionnaire', require('./routes/questionnaireRoutes')); // Add the questionnaire routes
 
 // Error handling middleware
 app.use((err, req, res, next) => {
