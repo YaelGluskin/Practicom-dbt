@@ -16,9 +16,13 @@ CREATE TABLE article(
   image_url VARCHAR(255),
   local_image_path VARCHAR(255),
   option INT NOT NULL,
+  labels VARCHAR(255)[] NOT NULL,  -- Array of strings, max length of 10 elements
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+-- Adding the constraint to limit the `option` array size to 10
+ALTER TABLE article
+  ADD CONSTRAINT option_array_limit CHECK (array_length(labels, 1) <= 10);
 
 CREATE TABLE questionnaire (
     questionnaire_id SERIAL PRIMARY KEY,
