@@ -5,12 +5,12 @@ const pool = require('../db'); // Import the pool object from the db module
 const createArticle = asyncHandler(async (req, res) => { // Controller function to create a new article in the database
     // console.log("1. createArticle: ", req.body);
     try { // Try to execute the following code block
-        const { title, summary, content, image_url, local_image_path, option } = req.body; // Destructure the title, summary, content, image_url, local_image_path, and option from the request body
+        const { title, summary, content, image_url, local_image_path, labels } = req.body; // Destructure the title, summary, content, image_url, local_image_path, and option from the request body
 
         const newArticle = await pool.query( // Execute the query to insert a new article into the database
-            `INSERT INTO "article" (title, summary, content, image_url, local_image_path, option)
+            `INSERT INTO "article" (title, summary, content, image_url, local_image_path, labels)
       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-            [title, summary, content, image_url, local_image_path, option] // Pass the title, summary, content, image_url, local_image_path, and option as parameters to the query
+            [title, summary, content, image_url, local_image_path, labels] // Pass the title, summary, content, image_url, local_image_path, and option as parameters to the query
         );
 
         res.json(newArticle.rows[0]); // Return the newly created article as JSON
@@ -33,6 +33,34 @@ const getAllArticles = asyncHandler(async (req, res) => { // Controller function
         res.status(500).send("Server error"); // Return a server error response
     }
 });
+
+// Read by label
+const getArticlesByLabels = asyncHandler(async (req, res) => {
+    const { labels } = req.body; // Expect an array of labels in the request body
+
+    try {
+        let query = 'SELECT * FROM "article"';
+        let values = [];
+
+        if (labels && labels.length > 0) {
+            // Ensure we only take up to 3 labels
+            const limitedLabels = labels.slice(0, 3);
+
+            // Create a SQL array from the labels
+            query += ' WHERE $1 && labels';
+            values = [limitedLabels];
+        }
+
+        query += ' ORDER BY created_at ASC';
+
+        const allArticles = await pool.query(query, values); // Execute the query with the provided labels
+        res.json(allArticles.rows); // Return the articles as JSON
+    } catch (err) {
+        console.error(err.message); // Log the error message to the console
+        res.status(500).send("Server error"); // Return a server error response
+    }
+});
+
 
 // Read by Option
 const getArticlesByOption = asyncHandler(async (req, res) => {
@@ -71,11 +99,11 @@ const getArticleById = asyncHandler(async (req, res) => {
 const updateArticle = asyncHandler(async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, summary, content, image_url, local_image_path, option } = req.body;
+        const { title, summary, content, image_url, local_image_path, labels } = req.body;
 
         const updateArticle = await pool.query(
-            `UPDATE "article" SET title = $1, summary = $2, content = $3, image_url = $4, local_image_path = $5, option = $6, updated_at = CURRENT_TIMESTAMP WHERE article_id = $7`,
-            [title, summary, content, image_url, local_image_path, option, id]
+            `UPDATE "article" SET title = $1, summary = $2, content = $3, image_url = $4, local_image_path = $5, labels = $6, updated_at = CURRENT_TIMESTAMP WHERE article_id = $7`,
+            [title, summary, content, image_url, local_image_path, labels, id]
         );
 
         res.json("Article was updated!");
@@ -105,6 +133,7 @@ const deleteArticle = asyncHandler(async (req, res) => {
 module.exports = {
     createArticle, // Controller function to create a new article in the database
     getAllArticles, // Controller function to get all articles from the database
+    getArticlesByLabels, // Controller function to get articles by labels from the database
     getArticlesByOption,
     getArticleById, // Controller function to get a specific article by its ID from the database
     updateArticle, // Controller function to update an existing article in the database
