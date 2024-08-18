@@ -1,15 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react';
 import {
-    Box, RadioGroup, Radio, Checkbox, FormControlLabel,TextField,
-    Button, FormControl, FormLabel, Typography, Grid, IconButton
+    Box, RadioGroup, Radio, Checkbox, FormControlLabel, TextField,
+    Button, FormControl, FormLabel, Typography, Grid
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'; // Import the DatePicker component
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'; // Import the AdapterDayjs component
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'; // Import the LocalizationProvider component
 import dayjs from 'dayjs'; // Import the dayjs library
-import CloseIcon from '@mui/icons-material/Close';
 import { UserContext } from '../../Hooks/UserContext';  // Import the UserContext
+import axios from 'axios'; // Import the axios library
+import PlaceSearch from './PlaceSearch';
+
 
 const preferences = [ // Define the preferences array
     "Limit Live Event",
@@ -38,10 +40,7 @@ const preferences = [ // Define the preferences array
 ];
 
 const Questionnaire = () => {
-    const [selectedPreferences, setSelectedPreferences] = useState([]);
-    const [keywords, setKeywords] = useState([]);
-    const [keywordInput, setKeywordInput] = useState('');
-
+    const [selectedPreferences, setSelectedPreferences] = useState([]); // Add the selectedPreferences state variable
     const navigate = useNavigate(); // Add the useNavigate hook to navigate to the new article form
     const [startDate, setStartDate] = useState(null); // Add the startDate state variable
     const [endDate, setEndDate] = useState(null); // Add the endDate state variable
@@ -54,24 +53,9 @@ const Questionnaire = () => {
                 : [...prev, value]
         );
     };
-
-    const handleKeywordChange = (event) => { // Define the handleKeywordChange function
-        setKeywordInput(event.target.value);
-    };
-
-    const handleAddKeyword = () => {
-        if (keywords.length < 10 && keywordInput) { // Add the keyword to the keywords array
-            setKeywords((prev) => [...prev, keywordInput]); // Add the keyword to the keywords array
-            setKeywordInput(''); // Clear the keyword input field
-        }
-    };
-    const handleDelete = (index) => { // Handle the deletion of a keyword
-        const newKeywords = keywords.filter((_, i) => i !== index);
-        setKeywords(newKeywords);
-    };
-
     const { user } = useContext(UserContext); // Get the user from the UserContext
-    const [user_id, setUser_id] = useState(null); // Add the user_id state variable
+    const [user_id, setUser_id] = useState(null);
+
     // Update user_id when user context changes
     useEffect(() => {
         if (user) {
@@ -93,9 +77,9 @@ const Questionnaire = () => {
         'Health',
         'Visiting Family',
     ];
-    const [selectEdendurance, setSelectEdendurance] = useState(''); // SelectEdendurance state variable and setSelectEdendurance function
+    const [selectedEdendurance, setSelectedEdendurance] = useState(''); // SelectedEdendurance state variable and setSelectedEdendurance function
     const handleEnduranceChange = (event) => { // Handle the endurance change
-        setSelectEdendurance(event.target.value);
+        setSelectedEdendurance(event.target.value);
     };
     const endurance = [ // Define the endurance array
         'A - professional',
@@ -106,8 +90,20 @@ const Questionnaire = () => {
     ];
     const [budget, setBudget] = useState();  // Add the budget state variable
 
-    const handleSubmit = (event) => { // Define the handleSubmit function
-        if(!user) {
+    const [selectedPlace, setSelectedPlace] = useState(''); // State to store the selected place
+
+    // Function to handle selecting a place
+    const handleSelect = (place) => {
+        // Remove any leading or trailing double quotes if present
+        const trimmedPlace = place.replace(/^"|"$/g, '');
+        setSelectedPlace(trimmedPlace);
+        console.log(place);
+        console.log(trimmedPlace);
+        // setSelectedPlace(place);
+    };
+
+    const handleSubmit = async (event) => { // Define the handleSubmit function
+        if (!user) {
             alert('Please log in to submit the Questionnaire.'); // Alert the user to log in
             navigate('/login'); // Navigate to the login page
             return;
@@ -118,42 +114,52 @@ const Questionnaire = () => {
         if (startDate <= today || endDate <= today) {
             alert('Please select a date after today.');
             return;
-        }        if (selectedPurpose && selectedPreferences.length > 0 && keywords.length > 0 && startDate && endDate &&
-            selectEdendurance &&  budget
-         ) { // Check if all fields are filled in
+        } if (selectedPurpose && selectedPreferences.length > 0 && selectedPlace && startDate && endDate &&
+            selectedEdendurance && budget
+        ) { // Check if all fields are filled in
             if (budget < 1000) {
                 alert('Budget must be at least 1000');
                 return;
             }
-          const formData = { // Create the form data object
-            selectedPurpose, // Add the selected purpose
-            selectedPreferences, // Add the selected preferences
-            keywords, // Add the keywords
-            startDate,
-            endDate,
-            selectEdendurance,
-            budget,
-            user_id // Add the user_id
-          };
-          console.log(formData); // Log the form data
-          navigate('/home'); // Navigate to the home page
+
         } else {
-          alert('Please fill in all fields before submitting the form.');
+            alert('Please fill in all fields before submitting the form.');
+            return;
         }
-      };
+        try {
+            const questionnaireData = { // Create the questionnaire data object
+                selectedPurpose, // Add the selected purpose
+                selectedPreferences, // Add the selected preferences
+                selectedPlace, // Add the keywords
+                startDate,
+                endDate,
+                selectedEndurance: selectedEdendurance,
+                budget,
+                user_id // Add the user_id
+            };
+            console.log(selectedPlace);
+            console.log(questionnaireData); // Log the form data
+            const response = await axios.post('http://localhost:5001/questionnaire/', questionnaireData);
+            console.log('Submited:', response.data);
+            navigate('/home'); // Navigate to the home page
+        } catch (error) {
+            console.error('Error submitting questionnaire:', error); // Log any errors
+        }
+    };
+
     return (
         <Box sx={{ p: 2 }}>
             <Typography variant="h4" gutterBottom>
                 Preferences Questionnaire
             </Typography>
             <form onSubmit={handleSubmit}>
-                <TextField 
-                    label="Budget" 
-                    type='number' 
-                    value={budget} 
-                    onChange={(event) => setBudget(event.target.value)} 
-                    fullWidth 
-                    margin="normal" 
+                <TextField
+                    label="Budget"
+                    type='number'
+                    value={budget}
+                    onChange={(event) => setBudget(event.target.value)}
+                    fullWidth
+                    margin="normal"
                 />
                 <Typography variant="subtitle1">You may choose 3 labels:</Typography>
                 <Grid container spacing={2}>
@@ -172,6 +178,16 @@ const Questionnaire = () => {
                         </Grid>
                     ))}
                     <Grid item xs={12}>
+
+                    <PlaceSearch onSelect={handleSelect} 
+                    value={selectedPlace}
+                    /> 
+                    {selectedPlace &&<Typography variant="subtitle1">{selectedPlace}</Typography>}
+                    </Grid>
+                    {/* Display the selected place */}
+                    
+                    {/* <Grid item xs={12}>
+                        
                         <TextField
                             label="Add Destination: city, country"
                             value={keywordInput}
@@ -206,7 +222,7 @@ const Questionnaire = () => {
                                 </ul>
                             </Box>
                         )}
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <Grid container spacing={2}>
@@ -215,7 +231,7 @@ const Questionnaire = () => {
                                         label="Start Date"
                                         inputFormat="DD/MM/YYYY"
                                         value={startDate}
-                                        
+
                                         onChange={(newValue) => setStartDate(newValue)}
                                         minDate={dayjs()}
                                         renderInput={(params) => <TextField {...params} fullWidth />}
@@ -257,7 +273,7 @@ const Questionnaire = () => {
                     <Grid item xs={12}>
                         <FormControl component="fieldset">
                             <FormLabel component="legend">Endurance</FormLabel>
-                            <RadioGroup value={selectEdendurance} onChange={handleEnduranceChange}>
+                            <RadioGroup value={selectedEdendurance} onChange={handleEnduranceChange}>
                                 {endurance.map((endurance, index) => (
                                     <FormControlLabel
                                         key={index}
